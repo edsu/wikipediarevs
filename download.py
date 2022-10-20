@@ -72,6 +72,11 @@ def write_revisions(resp):
     """
     page_id = list(resp["query"]["pages"].keys())[0]
     page = resp["query"]["pages"][page_id]
+
+    if "revisions" not in page:
+        print(f"No revisions in {json.dumps(resp)}")
+        return 
+
     for rev in page["revisions"]:
         title = page["title"].replace(" ", "_")
         path = output_dir / title / f"{rev['revid']}.json"
