@@ -7,7 +7,7 @@ import time
 import pathlib
 import requests
 
-from urllib.parse import urlparse
+from urllib.parse import urlparse, unquote
 
 output_dir = pathlib.Path("revisions")
 
@@ -21,7 +21,7 @@ def download(article_url):
     api_url = f"https://{host}/w/api.php"
 
     # the article title
-    title =  os.path.basename(url.path)
+    title =  unquote(os.path.basename(url.path))
 
     # The properties to request for each revision:
     # https://en.wikipedia.org/w/api.php?action=help&modules=query%2Brevisions
