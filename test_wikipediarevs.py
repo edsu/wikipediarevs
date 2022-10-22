@@ -9,7 +9,8 @@ output = pathlib.Path("test_output")
 
 @pytest.fixture(autouse=True)
 def remove_test_data():
-    shutil.rmtree("test_output")
+    if output.isdir():
+        shutil.rmtree(output)
 
 def test_download():
     rd = RevisionDownloader(["https://en.wikipedia.org/wiki/BagIt"], output_dir="test_output", quiet=True)
