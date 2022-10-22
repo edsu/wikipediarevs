@@ -9,7 +9,7 @@ output = pathlib.Path("test_output")
 
 @pytest.fixture(autouse=True)
 def remove_test_data():
-    if output.isdir():
+    if output.is_dir():
         shutil.rmtree(output)
 
 def test_download():
