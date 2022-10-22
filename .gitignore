@@ -1,0 +1,6 @@
+.eggs/
+Pipfile
+test_output/
+wikipediarevs.egg-info/
+*.log
+revisions
