@@ -1,6 +1,6 @@
 # wikipediarevs
 
-<img height=300 src="https://raw.githubusercontent.com/edsu/wikipediarevs/main/images/d3.png" />
+[![Build Status](https://github.com/edsu/wikipediarevs/workflows/tests/badge.svg)](https://github.com/edsu/wikipediarevs/actions/workflows/main.yml)
 
 If you have a file of Wikipedia article URLs wikipediarevs will get the page revisions for all of them (one JSON file per revision).
 
