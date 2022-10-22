@@ -1,5 +1,7 @@
 # wikipediarevs
 
+<img height=300 src="https://raw.githubusercontent.com/edsu/wikipediarevs/main/images/d3.png" />
+
 If you have a file of Wikipedia article URLs wikipediarevs will get the page revisions for all of them (one JSON file per revision).
 
 ## Install
