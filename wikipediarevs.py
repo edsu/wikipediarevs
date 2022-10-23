@@ -119,6 +119,7 @@ class RevisionDownloader:
             if not path.parent.is_dir():
                 path.parent.mkdir(parents=True)
             json.dump(rev, path.open('w'), indent=2)
+            logging.info("wrote %s", path)
             if not self.quiet:
                 print(path)
 
