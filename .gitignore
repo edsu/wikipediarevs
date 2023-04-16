@@ -1,6 +1,9 @@
 .eggs/
 Pipfile
-test_output/
+test-output/
 wikipediarevs.egg-info/
 *.log
 revisions
+build
+dist
+__pycache__

@@ -1,6 +1,6 @@
 from setuptools import setup
 
-__version__ = "0.0.2"
+__version__ = "0.1.0"
 
 def load_requirements(filename):
     with open(filename, "rt") as fh:

@@ -5,7 +5,7 @@ import pathlib
 
 from wikipediarevs import RevisionDownloader
 
-output = pathlib.Path("test_output")
+output = pathlib.Path("test-output")
 
 @pytest.fixture(autouse=True)
 def remove_test_data():
@@ -13,7 +13,7 @@ def remove_test_data():
         shutil.rmtree(output)
 
 def test_download():
-    rd = RevisionDownloader(["https://en.wikipedia.org/wiki/BagIt"], output_dir="test_output", quiet=True)
+    rd = RevisionDownloader(["https://en.wikipedia.org/wiki/BagIt"], output_dir="test-output", quiet=True)
     rd.run()
 
     revs_dir = output / "en.wikipedia.org" / "BagIt"
@@ -24,7 +24,7 @@ def test_download():
     assert rev["revid"] == 390446530
 
 def test_update():
-    rd = RevisionDownloader(["https://en.wikipedia.org/wiki/BagIt"], output_dir="test_output", quiet=True)
+    rd = RevisionDownloader(["https://en.wikipedia.org/wiki/BagIt"], output_dir="test-output", quiet=True)
     rd.run()
 
     revs_dir = output / "en.wikipedia.org" / "BagIt"
@@ -39,3 +39,14 @@ def test_update():
     # running again should fill in up to the latest on disk, but not more
     rd.run()
     assert len(list(revs_dir.iterdir())) == 2
+
+def test_invalid_urls(caplog):
+    # these should not cause an exception but will get logged
+    rd = RevisionDownloader(["x", "https://blah.com"], output_dir="test-output", quiet=True)
+    rd.run()
+
+    msgs = caplog.record_tuples
+    assert len(msgs) == 2
+    assert msgs[0][2] == 'Invalid URL x'
+    assert 'HTTP error' in msgs[1][2]
+

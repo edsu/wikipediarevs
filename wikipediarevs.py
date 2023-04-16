@@ -13,16 +13,20 @@ from urllib.parse import urlparse
 
 def main():
     parser = argparse.ArgumentParser(description="Download Wikipedia article revisions")
-    parser.add_argument("input", type=str, help="A Wikipedia article URL or a file that contains Wikipedia URLs.")
+    parser.add_argument("input", type=str, help="A Wikipedia article URL or a UTF-8 encoded file that contains lines of Wikipedia URLs")
     parser.add_argument("--output-dir", default="revisions", type=str, help="The path to a directory where to write results.")
     parser.add_argument("--log", type=str, default="wikipediarevs.log", help="Where to write a log file.")
     parser.add_argument("--quiet", action="store_true", help="Don't print progress to the console.")
+    parser.add_argument("--encoding", type=str, default="utf-8-sig", help="The input file character encoding.")
     opts = parser.parse_args()
     logging.basicConfig(filename=opts.log, level=logging.INFO)
 
     # get the input URL
     if os.path.isfile(opts.input):
-        urls = open(opts.input).read().splitlines()
+        try:
+            urls = open(opts.input, encoding=opts.encoding).read().splitlines()
+        except ValueError:
+            sys.exit(f"Unable to read {opts.input} using the {opts.encoding} character encoding, consider using the --encoding option to set it.")
     else:
         urls = [opts.input]
 
@@ -41,11 +45,19 @@ class RevisionDownloader:
 
     def run(self):
         for article_url in self.urls:
-            self.download(article_url)
+            try:
+                self.download(article_url)
+            except ValueError as e:
+                logging.error(e)
+            except requests.exceptions.RequestException as e:
+                logging.error("HTTP error when fetching revisions for %s: %s", article_url, e)
 
     def download(self, article_url):
         logging.info("downloading revisions for %s", article_url)
         url = urlparse(article_url)
+        if url.netloc == '':
+            raise ValueError(f"Invalid URL {article_url}")
+
         host = url.netloc
         api_url = f"https://{host}/w/api.php"
 
@@ -127,7 +139,10 @@ class RevisionDownloader:
         if not article_dir.is_dir():
             return None
         revs = sorted(map(lambda d: int(d.name.replace(".json", "")), article_dir.iterdir()))
-        return revs[-1]
+        if len(revs) > 0:
+            return revs[-1]
+        else:
+            return None
 
 if __name__ == "__main__":
     main()
